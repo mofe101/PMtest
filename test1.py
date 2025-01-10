@@ -78,13 +78,19 @@ else:
 
 
 # Merge 
-merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+# Ensure the column names match
+df1.rename(columns={'member_id': 'member_id'}, inplace=True)  # Rename column in df1 if necessary
+df2.rename(columns={'member.member_id': 'member_id'}, inplace=True)  # Rename column in df2 if necessary
+
+# Merge df1 and df2 into a single DataFrame, df
+df = pd.merge(df1, df2, on='member_id', how='inner')  # You can adjust how='inner' based on your needs (left, right, outer)
+
+# Now df contains the merged dataset
+
+#merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
 
 
 merged_df = merged_df.drop(columns=['member.member_id'])
-
-
-merged_df
 
 df = merged_df
 
