@@ -326,11 +326,7 @@ benefit_utilization.index = benefit_utilization.index + 1
 df = df.merge(benefit_utilization[['Benefit ID', 'Utilization (%)']], on='Benefit ID', how='left')
 
 
-#df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
-if 'Utilization (%)' in df.columns:
-    df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
-else:
-    df['Utilization (%)'] = 0
+df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
 
 
 
