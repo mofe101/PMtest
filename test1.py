@@ -14,42 +14,23 @@ from pathlib import Path
 # df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
 # df2 = pd.read_csv('/Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
 
-# Uploading
-uploaded_file1 = st.file_uploader("Please upload Enrollment File", type='csv')
-if uploaded_file1 is not None:
-    df1 = pd.read_csv(uploaded_file1)  # Read the first uploaded file
-    # NO displaying  dataframe
-    # st.write("Enrollment file loaded:", df1.head())  # Do not display data
 
-uploaded_file2 = st.file_uploader("Please upload Analytics Benefits and Utilization File: ", type='csv')
+# Upload the files
+uploaded_file1 = st.file_uploader("Upload Enrollment File", type='csv')
+if uploaded_file1 is not None:
+    df1 = pd.read_csv(uploaded_file1)
+    st.write("Enrollment file loaded:", df1.head())  # Display the first few rows for confirmation
+
+uploaded_file2 = st.file_uploader("Upload Benefits File", type='csv')
 if uploaded_file2 is not None:
-    df2 = pd.read_csv(uploaded_file2)  # Read the second uploaded file
-     # NO displaying  dataframe
-    # st.write("Benefits file loaded:", df2.head())  # Do not display data (from before)
+    df2 = pd.read_csv(uploaded_file2)
+    st.write("Benefits file loaded:", df2.head())  # Display the first few rows for confirmation
 
 # Check if the files are loaded before merging
 if 'df1' in locals() and 'df2' in locals():
     merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
 else:
     st.error("Files not loaded properly, please upload the correct files.")
-
-
-# # Upload the files
-# uploaded_file1 = st.file_uploader("Upload Enrollment File", type='csv')
-# if uploaded_file1 is not None:
-#     df1 = pd.read_csv(uploaded_file1)
-#     st.write("Enrollment file loaded:", df1.head())  # Display the first few rows for confirmation
-
-# uploaded_file2 = st.file_uploader("Upload Benefits File", type='csv')
-# if uploaded_file2 is not None:
-#     df2 = pd.read_csv(uploaded_file2)
-#     st.write("Benefits file loaded:", df2.head())  # Display the first few rows for confirmation
-
-# # Check if the files are loaded before merging
-# if 'df1' in locals() and 'df2' in locals():
-#     merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
-# else:
-#     st.error("Files not loaded properly, please upload the correct files.")
 
 
 
