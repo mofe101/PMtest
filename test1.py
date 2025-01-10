@@ -10,32 +10,50 @@ import pandas as pd
 import pandas as pd
 import streamlit as st
 
+import pandas as pd
+import streamlit as st
+
 # File upload widgets
 file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
 
 # Check if both files are uploaded
 if file1 is not None and file2 is not None:
-    # Read the CSV files
-    df1 = pd.read_csv(file1)
-    df2 = pd.read_csv(file2)
-
-    # Merge the datasets based on member_id
-    if 'member_id' in df1.columns and 'member.member_id' in df2.columns:
-        merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id', how='inner')
+    # Try to read the CSV files and output basic info for debugging
+    try:
+        df1 = pd.read_csv(file1)
+        df2 = pd.read_csv(file2)
         
-        # Check that the merged_df contains the necessary columns and data
-        if 'benefit_id' in merged_df.columns:
-            # Proceed only if the 'benefit_id' column exists
-            df = merged_df
-            unique_benefit_ids = df['benefit_id'].nunique()
-            st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
+        # Display the first few rows of both dataframes to help debug
+        st.write("Enrollment Data (First few rows):", df1.head())
+        st.write("Internal Analytics Data (First few rows):", df2.head())
+        
+        # Ensure columns are present before proceeding with the merge
+        if 'member_id' in df1.columns and 'member.member_id' in df2.columns:
+            # Merge datasets on 'member_id'
+            merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id', how='inner')
+            
+            # Check that the 'benefit_id' column is present in the merged dataframe
+            if 'benefit_id' in merged_df.columns:
+                df = merged_df
+                
+                # Display the first few rows of merged data for debugging
+                st.write("Merged Data (First few rows):", df.head())
+                
+                # Get number of unique 'benefit_id' and display it
+                unique_benefit_ids = df['benefit_id'].nunique()
+                st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
+            else:
+                st.write("The 'benefit_id' column is missing in the merged data.")
         else:
-            st.write("The 'benefit_id' column is missing from the merged data.")
-    else:
-        st.write("The necessary 'member_id' columns are missing in one or both datasets.")
+            st.write("The necessary 'member_id' columns are missing in one or both datasets.")
+    
+    except Exception as e:
+        st.write(f"An error occurred: {str(e)}")
+
 else:
     st.warning("Please upload both CSV files.")
+
 
 
 
