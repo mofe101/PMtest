@@ -33,8 +33,8 @@ if file1 is not None and file2 is not None:
 if st.button('Show Raw Data'):
             st.write(df1.head())  
             st.write(df2.head())  
-    else:
-        st.warning("Please upload both CSV files.")
+else:
+    st.warning("Please upload both CSV files.")
   
 
 
