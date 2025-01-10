@@ -82,7 +82,7 @@ def get_quarter(date):
 
 df['quarter_of_funding'] = df['quarter_of_funding'].apply(get_quarter)
 
-display(df)
+#display(df)
 
 #dropping mid column cause what is that
 df = df.drop(columns=['mid'])
@@ -116,7 +116,7 @@ df3 = df[['Member ID', 'Benefit ID', 'Sponsor ID', 'Amount Spent',
 df.reset_index(drop=True, inplace=True)  # Reset index first
 df.index = df.index + 1
 
-display(df3)
+#display(df3)
 
 
 import re
@@ -172,9 +172,9 @@ df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
 
 
 # Display the final DataFrame
-display(df)
+#display(df)
 
-display(benefit_utilization)
+#display(benefit_utilization)
 
 
 
