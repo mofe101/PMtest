@@ -7,12 +7,6 @@ import os
 from pathlib import Path
 import pandas as pd
 
-import streamlit as st
-import pandas as pd
-
-
-import streamlit as st
-import pandas as pd
 
 # Print Streamlit version
 print(f"Streamlit Version: {st.__version__}")
