@@ -270,3 +270,6 @@ elif choice == 'Utilization Rates for San Francisco Merchants':
 elif choice == 'Dataset':
     st.subheader('Full Dataset')
     st.dataframe(df)
+
+
+    st.dataframe(df, height=1000)
