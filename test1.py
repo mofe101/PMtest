@@ -22,31 +22,36 @@ file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="
 
 # Ensure both files are uploaded
 if file1 is not None and file2 is not None:
-    # Read the CSV files
+
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
-
-    # Check if merge columns exist
+    
+    # Check if merge columns exist before merging
     if 'member_id' in df1.columns and 'member.member_id' in df2.columns:
-        # Merge the dataframes on the correct columns
         try:
+            # Perform the merge
             merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
-            st.write("Merge successful!")
-            
-            # Continue with your analysis:
-            df = merged_df
-            
-            # Perform operations on df (now it's safe to use it)
-            unique_benefit_ids = df['benefit_id'].nunique()
-            st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
 
-            # Continue other operations here...
+            # Check if the merge resulted in data
+            if merged_df.empty:
+                st.write("Merge was successful, but the result is empty.")
+            else:
+                df = merged_df  # Assign the merged DataFrame to df
+                st.write("Merge successful and df is now available.")
+                
+                # Now perform the operation safely
+                try:
+                    unique_benefit_ids = df['benefit_id'].nunique()
+                    st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
+                except KeyError as e:
+                    st.write(f"Column 'benefit_id' not found in df: {e}")
         except Exception as e:
             st.write(f"Error during merge: {e}")
     else:
-        st.write("Columns for merging were not found. Please check your file column names.")
+        st.write("Merge columns ('member_id' or 'member.member_id') not found. Please check the file structure.")
 else:
     st.warning("Please upload both CSV files.")
+
 
 
 
