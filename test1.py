@@ -7,9 +7,6 @@ import os
 from pathlib import Path
 import pandas as pd
 
-import streamlit as st
-import pandas as pd
-
 # Print Streamlit version
 print(f"Streamlit Version: {st.__version__}")
 
@@ -25,16 +22,62 @@ if file1 is not None and file2 is not None:
     # Clear the file uploader widgets
     upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
     
-  
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
+    
+    # Sidebar 
+    st.sidebar.title("Dashboard Navigation")
+    menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
+    choice = st.sidebar.selectbox('Select a Page:', menu)
 
-    # Conditional display of data to only show when the user clicks the button
-    if st.button('Show Data'):
-        st.write(df1.head())  
-        st.write(df2.head())  
+    #Conditional display for each page
+    if choice == 'Benefit Utilization for Q4':
+        st.subheader('Benefit Utilization Rates for Q4')
+      
+
+    elif choice == 'Utilization Rates for San Francisco Merchants':
+        st.subheader('Utilization Rates for San Francisco Merchants')
+
+
+    elif choice == 'Dataset':
+        if st.button('Show Dataset'):
+            st.subheader("Uploaded Datasets")
+            st.write("Enrollment Data:")
+            st.dataframe(df1.head())  # Display first file
+            st.write("Internal Analytics Data:")
+            st.dataframe(df2.head())  # Display second file
+
 else:
     st.warning("Please upload both CSV files.")
+    
+# # Print Streamlit version
+# print(f"Streamlit Version: {st.__version__}")
+
+# # st.empty =  conditionally hide file upload widgets
+# upload_placeholder = st.empty()
+
+
+# file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
+# file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
+
+# # Logic for file uploads and conditional display
+# if file1 is not None and file2 is not None:
+#     # Clear the file uploader widgets
+#     upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
+    
+#     # 
+#     df1 = pd.read_csv(file1)
+#     df2 = pd.read_csv(file2)
+    
+#     # Button to control display 
+#     if st.button('Show Raw Data'):
+#         st.subheader("Enrollment CSV:")
+#         st.write(df1.head())
+#         st.subheader("Internal Analytics CSV:")
+#         st.write(df2.head())
+# else:
+#     st.warning("Please upload both CSV files.")
+
 
 
 # print(st.__version__)  
@@ -76,14 +119,14 @@ else:
 #     st.warning("Please upload both CSV files.")
 
 
-# # Merge 
-# merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+# Merge 
+merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
 
 
-# merged_df = merged_df.drop(columns=['member.member_id'])
+merged_df = merged_df.drop(columns=['member.member_id'])
 
 
-#merged_df
+merged_df
 
 df = merged_df
 
@@ -238,6 +281,122 @@ choice = st.sidebar.selectbox('Select a Page:', menu)
 if choice == 'Benefit Utilization for Q4':
     st.subheader('Benefit Utilization Rates for Q4')
 
+    #figures?
+    plt.figure(figsize=(12, 9.5))
+
+    barplot = sns.barplot(x='Benefit ID', y='Utilization (%)', data=benefit_utilization, palette='viridis')
+
+    plt.xlabel('Benefit ID', fontsize=16, fontweight='bold')
+    plt.ylabel('Utilization Rate (%)', fontsize=16, fontweight='bold')
+
+    #
+    norm = mcolors.Normalize(vmin=benefit_utilization['Utilization (%)'].min(), vmax=benefit_utilization['Utilization (%)'].max())
+    sm = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
+    sm.set_array([])
+    plt.colorbar(sm, ax=plt.gca())
+
+    # Add utilization % on top of each bar
+    for p in barplot.patches:
+        height = p.get_height()
+        barplot.text(p.get_x() + p.get_width() / 2., height + 1, f'{height:.1f}%', ha='center', va='bottom', fontsize=12)
+
+    # Show plot
+    st.pyplot(plt)
+
+# Page 2: Utilization Rates for San Francisco Merchants
+elif choice == 'Utilization Rates for San Francisco Merchants':
+    st.subheader('Utilization Rates for San Francisco Merchants')
+
+    # Filter out specific merchants
+    merchant_list = [
+        "SAFEWAY #1490 SAN FRANCISCO CA",
+        "CVS/PHARMACY #04675 SAN FRANCISCO CA",
+        "WALGREENS #4570 SAN FRANCISCO CA",
+        "FOODSCO #0351 SAN FRANCISCO CA"
+    ]
+    
+    # Filter data
+    df_filtered = df[df['Merchant'].isin(merchant_list)]
+
+ 
+    avg_utilization = df_filtered.groupby('Merchant')['Utilization (%)'].mean().sort_values()
+
+ 
+    avg_utilization_df = avg_utilization.reset_index()
+
+
+    fig = px.bar(
+        avg_utilization_df,
+        x="Merchant", 
+        y="Utilization (%)",
+        labels={"Utilization (%)": "Utilization Rate (%)", "Merchant": ""},
+        #title="Average Utilization Rate by Merchant in San Francisco",
+
+    )
+
+    #layout
+    fig.update_layout(
+        yaxis=dict(range=[25, 33]),  
+        font=dict(size=14),  # General font size
+        hoverlabel=dict(font_size=14),
+          width=900,  # Set the width of the figure
+        height=700,
+        showlegend=False  
+    )
+
+    st.plotly_chart(fig)
+
+# Page 3: View Dataset
+elif choice == 'Dataset':
+    st.subheader('Full Dataset')
+    st.dataframe(df)
+
+
+unique_merchants = df['Merchant'].unique() 
+
+benefit_utilization = df.groupby('Benefit ID')[['Amount Spent', 'Amount Allocated']].sum().reset_index()
+
+#Calculate 'Utilization (%)'
+benefit_utilization['Utilization (%)'] = (benefit_utilization['Amount Spent'] / benefit_utilization['Amount Allocated']) * 100
+
+#Handle NaN values
+benefit_utilization['Utilization (%)'] = benefit_utilization['Utilization (%)'].fillna(0)
+
+#adjust the index to start at 1
+benefit_utilization.reset_index(drop=True, inplace=True)
+benefit_utilization.index = benefit_utilization.index + 1
+
+df = df.merge(benefit_utilization[['Benefit ID', 'Utilization (%)']], on='Benefit ID', how='left')
+
+
+df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
+
+
+
+# Display the final DataFrame
+#display(df)
+
+#display(benefit_utilization)
+
+
+st.sidebar.image("soda.png")
+
+#st.sidebar.image("/Users/mofeogunsola/Documents/soda.png")
+
+
+
+# Sidebar title and navigation options
+st.sidebar.markdown("<h1 style='font-size:30px;'>Benefits Utilization</h1>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='font-size:17px; margin-bottom: 50px;'>Looking into overall Q4 data and merchant impact on utilization rates</h2>", unsafe_allow_html=True)
+
+st.sidebar.title("Dashboard Navigation")
+menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
+choice = st.sidebar.selectbox('Select a Page:', menu)
+
+# Page 1: Benefit Utilization Graph for Q4
+if choice == 'Benefit Utilization for Q4':
+    st.subheader('Benefit Utilization Rates for Q4')
+
   #figures?
     plt.figure(figsize=(12, 9.5))
 
@@ -307,3 +466,4 @@ elif choice == 'Utilization Rates for San Francisco Merchants':
 elif choice == 'Dataset':
     st.subheader('Full Dataset')
     st.dataframe(df)
+
