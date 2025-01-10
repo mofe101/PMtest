@@ -25,7 +25,6 @@ if file1 is not None and file2 is not None:
     # Clear the file uploader widgets
     upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
     
-  
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
     
@@ -327,7 +326,11 @@ benefit_utilization.index = benefit_utilization.index + 1
 df = df.merge(benefit_utilization[['Benefit ID', 'Utilization (%)']], on='Benefit ID', how='left')
 
 
-df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
+#df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
+if 'Utilization (%)' in df.columns:
+    df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
+else:
+    df['Utilization (%)'] = 0
 
 
 
