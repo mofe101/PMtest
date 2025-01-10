@@ -12,20 +12,20 @@ import pandas as pd
 
 print(st.__version__)  
 
+file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
+file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
 
-current_dir = Path(os.getcwd())  # Get the current directory where script is executed
+if file1 is not None and file2 is not None:
+    # Read the CSV files
+    df1 = pd.read_csv(file1)
+    df2 = pd.read_csv(file2)
 
+    # Show data (optional)
+    st.write(df1.head())
+    st.write(df2.head())
 
-csv_path_1 = current_dir / 'Enrollment.csv'
-csv_path_2 = current_dir / 'Internal Analytics_Benefits and Utilization_Table.csv'
-
-
-print(f"Full path to Enrollment.csv: {csv_path_1}")
-print(f"Full path to Internal Analytics_Benefits and Utilization_Table.csv: {csv_path_2}")
-
-
-df1 = pd.read_csv(csv_path_1)
-df2 = pd.read_csv(csv_path_2)
+else:
+    st.warning("Please upload both CSV files.")
 
 
 #df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
