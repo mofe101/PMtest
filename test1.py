@@ -20,19 +20,21 @@ upload_placeholder = st.empty()
 file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
 
-# Hide file upload section once files are uploaded
 if file1 is not None and file2 is not None:
-    # Clear the file uploader widgets
-    upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
-    
-  
+   
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
 
-    # Conditional display of data to only show when the user clicks the button
-    if st.button('Show Data'):
-        st.write(df1.head())  
-        st.write(df2.head())  
+    # Debug: Check if the files are loaded properly
+    st.write("df1 columns:", df1.columns)
+    st.write("df2 columns:", df2.columns)
+
+    # Try to merge the dataframes
+    try:
+        merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+        st.write("Merge successful!")
+    except KeyError as e:
+        st.write(f"Merge failed due to missing columns: {e}")
 else:
     st.warning("Please upload both CSV files.")
 
@@ -87,7 +89,7 @@ else:
 
 #df = merged_df
 # Merge the dataframes (example assumes 'member_id' is the common column)
-merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+#merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
 
 
 unique_benefit_ids = df['benefit_id'].nunique()
