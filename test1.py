@@ -85,7 +85,10 @@ else:
 
 #merged_df
 
-df = merged_df
+#df = merged_df
+# Merge the dataframes (example assumes 'member_id' is the common column)
+merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+
 
 unique_benefit_ids = df['benefit_id'].nunique()
 print("Number of unique benefit IDs:", unique_benefit_ids)
