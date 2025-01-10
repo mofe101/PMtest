@@ -9,8 +9,8 @@ import plotly.express as px
 
 print(st.__version__)  
 
-df1 = pd.read_csv('Enrollment.csv')
-df2 = pd.read_csv('Internal Analytics_Benefits and Utilization_Table.csv')
+df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
+df2 = pd.read_csv('Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
 
 
 
