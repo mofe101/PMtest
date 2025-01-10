@@ -7,50 +7,48 @@ import os
 from pathlib import Path
 import pandas as pd
 
-import streamlit as st
-import pandas as pd
-
-# Print Streamlit version
-print(f"Streamlit Version: {st.__version__}")
-
-# Use st.empty() to conditionally hide file upload widgets
-upload_placeholder = st.empty()
 
 # File upload widgets
+upload_placeholder = st.empty()
+
 file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
 
-# Ensure both files are uploaded
+# Hide file upload section once files are uploaded
 if file1 is not None and file2 is not None:
-
+    # Clear the file uploader widgets
+    upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
+    
+    # Load CSV files into DataFrames
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
-    
-    # Check if merge columns exist before merging
+
+    # Check if the necessary columns exist before merging
     if 'member_id' in df1.columns and 'member.member_id' in df2.columns:
         try:
-            # Perform the merge
-            merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
-
-            # Check if the merge resulted in data
+            # Merge the datasets on 'member_id' and 'member.member_id'
+            merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id', how='inner')
+            
+            # Check if the merged DataFrame has any data
             if merged_df.empty:
-                st.write("Merge was successful, but the result is empty.")
+                st.write("The merged DataFrame is empty after merging. Please check your data.")
             else:
-                df = merged_df  # Assign the merged DataFrame to df
-                st.write("Merge successful and df is now available.")
-                
-                # Now perform the operation safely
-                try:
+                # If the merge was successful and there is data, we proceed
+                df = merged_df
+
+                # Ensure 'benefit_id' column exists
+                if 'benefit_id' in df.columns:
                     unique_benefit_ids = df['benefit_id'].nunique()
                     st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
-                except KeyError as e:
-                    st.write(f"Column 'benefit_id' not found in df: {e}")
+                else:
+                    st.write("Column 'benefit_id' not found in the DataFrame.")
         except Exception as e:
-            st.write(f"Error during merge: {e}")
+            st.write(f"Error during merge operation: {e}")
     else:
-        st.write("Merge columns ('member_id' or 'member.member_id') not found. Please check the file structure.")
+        st.write("Required merge columns ('member_id' or 'member.member_id') not found in one or both of the uploaded files. Please check your file structure.")
 else:
     st.warning("Please upload both CSV files.")
+
 
 
 
