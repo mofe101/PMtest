@@ -7,58 +7,40 @@ import os
 from pathlib import Path
 import pandas as pd
 
-import pandas as pd
-import streamlit as st
-
-import pandas as pd
-import streamlit as st
-
-import pandas as pd
-import streamlit as st
-
 # File upload widgets
 file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
 
 # Check if both files are uploaded
 if file1 is not None and file2 is not None:
-    # Try to read the CSV files and output basic info for debugging
     try:
         # Load the CSV files into DataFrames
         df1 = pd.read_csv(file1)
         df2 = pd.read_csv(file2)
         
-        # Display the first few rows of both dataframes to help debug
-        st.write("Enrollment Data (First few rows):", df1.head())
-        st.write("Internal Analytics Data (First few rows):", df2.head())
-
-        # Ensure columns are present before proceeding with the merge
-        if 'member_id' in df1.columns and 'member.member_id' in df2.columns:
-            # Merge datasets on 'member_id'
-            merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id', how='inner')
-
-            # Output the columns of the merged dataframe for debugging
-            st.write("Columns in the Merged Dataframe:", merged_df.columns)
-
-            # Check for 'benefit_id' column in the merged dataframe
-            if 'benefit_id' not in merged_df.columns:
-                st.write("Error: The 'benefit_id' column is not found in the merged data.")
+        # Ensure 'benefit_id' exists and correctly named in both files before merging
+        if 'benefit_id' not in df1.columns:
+            # If 'benefit_id' is not in df1, ensure it is properly aligned (for instance, from df2)
+            if 'benefit_id' in df2.columns:
+                # Copy benefit_id from df2 to df1 (adjust as needed depending on data structure)
+                df1['benefit_id'] = df2['benefit_id']  # Adjust as needed based on your logic
             else:
-                # Proceed if 'benefit_id' exists
-                df = merged_df
-                
-                # Display first few rows of merged data for inspection
-                st.write("Merged Data (First few rows):", df.head())
+                st.write("Error: 'benefit_id' column is missing from both files.")
+                return
 
-                # Debugging step to see what's inside the column
-                st.write("Unique Values in 'benefit_id' column:", df['benefit_id'].unique())
-
-                # Number of unique 'benefit_id's
-                unique_benefit_ids = df['benefit_id'].nunique()
-                st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
+        # Now that we ensure 'benefit_id' is in df1, proceed with the merge
+        merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id', how='inner')
         
+        # Check merged dataframe to ensure 'benefit_id' exists
+        if 'benefit_id' in merged_df.columns:
+            df = merged_df
+            st.write("Merged Data (First few rows):", df.head())
+
+            # Proceed with the analysis
+            unique_benefit_ids = df['benefit_id'].nunique()
+            st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
         else:
-            st.write("The necessary 'member_id' columns are missing in one or both datasets.")
+            st.write("Error: 'benefit_id' column is missing after the merge.")
     
     except Exception as e:
         st.write(f"An error occurred: {str(e)}")
