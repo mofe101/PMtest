@@ -28,13 +28,14 @@ if file1 is not None and file2 is not None:
   
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
-
-    # Conditional display of data to only show when the user clicks the button
-    if st.button('Show Data'):
-        st.write(df1.head())  
-        st.write(df2.head())  
-else:
-    st.warning("Please upload both CSV files.")
+    
+    Conditional display of data: only show when the user clicks the button
+        if st.button('Show Raw Data'):
+            st.write(df1.head())  
+            st.write(df2.head())  
+    else:
+        st.warning("Please upload both CSV files.")
+  
 
 
 # print(st.__version__)  
