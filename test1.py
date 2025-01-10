@@ -9,20 +9,20 @@ import plotly.express as px
 
 print(st.__version__)  
 
-current_dir = Path(__file__).parent  # This will give the path to the current directory
 
-# Dynamically build paths for your CSV files
+current_dir = Path(os.getcwd())  # Get the current directory where script is executed
+
+
 csv_path_1 = current_dir / 'Enrollment.csv'
 csv_path_2 = current_dir / 'Internal Analytics_Benefits and Utilization_Table.csv'
 
-# Verify the full paths to ensure you're accessing the correct location
+
 print(f"Full path to Enrollment.csv: {csv_path_1}")
 print(f"Full path to Internal Analytics_Benefits and Utilization_Table.csv: {csv_path_2}")
 
-# Now read both CSV files
+
 df1 = pd.read_csv(csv_path_1)
 df2 = pd.read_csv(csv_path_2)
-
 
 
 #df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
