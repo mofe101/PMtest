@@ -9,11 +9,19 @@ from pathlib import Path
 
 
 
-print(st.__version__)  
+# print(st.__version__)  
 
-df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
-df2 = pd.read_csv('/Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
+# df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
+# df2 = pd.read_csv('/Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
 
+# Example to let the user upload CSV files:
+uploaded_file1 = st.file_uploader("Upload Enrollment File", type='csv')
+if uploaded_file1 is not None:
+    df1 = pd.read_csv(uploaded_file1)
+
+uploaded_file2 = st.file_uploader("Upload Benefits File", type='csv')
+if uploaded_file2 is not None:
+    df2 = pd.read_csv(uploaded_file2)
 
 
 # Merge 
