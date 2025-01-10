@@ -8,6 +8,34 @@ import os
 from pathlib import Path
 import pandas as pd
 
+import streamlit as st
+import pandas as pd
+
+# Print Streamlit version
+print(f"Streamlit Version: {st.__version__}")
+
+# Use st.empty() to conditionally hide file upload widgets
+upload_placeholder = st.empty()
+
+# File upload widgets
+file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
+file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
+
+# Hide file upload section once files are uploaded
+if file1 is not None and file2 is not None:
+    # Clear the file uploader widgets
+    upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
+    
+  
+    df1 = pd.read_csv(file1)
+    df2 = pd.read_csv(file2)
+
+    # Conditional display of data to only show when the user clicks the button
+    if st.button('Show Data'):
+        st.write(df1.head())  
+        st.write(df2.head())  
+else:
+    st.warning("Please upload both CSV files.")
 
 
 # print(st.__version__)  
@@ -32,28 +60,28 @@ import pandas as pd
 #df2 = pd.read_csv('Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
 
 
-# 
-file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
-file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
+# # 
+# file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
+# file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
 
-if file1 is not None and file2 is not None:
-    # Read the CSV files
-    df1 = pd.read_csv(file1)
-    df2 = pd.read_csv(file2)
+# if file1 is not None and file2 is not None:
+#     # Read the CSV files
+#     df1 = pd.read_csv(file1)
+#     df2 = pd.read_csv(file2)
 
-    # Conditional display of data: only show when the user clicks the button
-    if st.button('Show Raw Data'):
-        st.write(df1.head())  
-        st.write(df2.head())  
-else:
-    st.warning("Please upload both CSV files.")
-
-
-# Merge 
-merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+#     # Conditional display of data: only show when the user clicks the button
+#     if st.button('Show Raw Data'):
+#         st.write(df1.head())  
+#         st.write(df2.head())  
+# else:
+#     st.warning("Please upload both CSV files.")
 
 
-merged_df = merged_df.drop(columns=['member.member_id'])
+# # Merge 
+# merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+
+
+# merged_df = merged_df.drop(columns=['member.member_id'])
 
 
 #merged_df
