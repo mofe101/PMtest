@@ -1,96 +1,29 @@
-
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
 import matplotlib.colors as mcolors 
 import plotly.express as px
-import os
-from pathlib import Path
-import pandas as pd
-
-# Print Streamlit version
-print(f"Streamlit Version: {st.__version__}")
-
-# st.empty =  conditionally hide file upload widgets
-upload_placeholder = st.empty()
-
-
-file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
-file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
-
-# Logic for file uploads and conditional display
-if file1 is not None and file2 is not None:
-    # Clear the file uploader widgets
-    upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
-    
-    # 
-    df1 = pd.read_csv(file1)
-    df2 = pd.read_csv(file2)
-    
-    # Button to control display 
-    if st.button('Show Raw Data'):
-        st.subheader("Enrollment CSV:")
-        st.write(df1.head())
-        st.subheader("Internal Analytics CSV:")
-        st.write(df2.head())
-else:
-    st.warning("Please upload both CSV files.")
+import os 
+from pathlib import Path 
 
 
 
-# print(st.__version__)  
+print(st.__version__)  
 
-# file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
-# file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
+df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
+df2 = pd.read_csv('/Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
 
-# if file1 is not None and file2 is not None:
-#     # Read the CSV files
-#     df1 = pd.read_csv(file1)
-#     df2 = pd.read_csv(file2)
-
-#     # Show data (optional)
-#     st.write(df1.head())
-#     st.write(df2.head())
-
-# else:
-#     st.warning("Please upload both CSV files.")
-
-
-#df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
-#df2 = pd.read_csv('Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
-
-
-# # 
-# file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
-# file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
-
-# if file1 is not None and file2 is not None:
-#     # Read the CSV files
-#     df1 = pd.read_csv(file1)
-#     df2 = pd.read_csv(file2)
-
-#     # Conditional display of data: only show when the user clicks the button
-#     if st.button('Show Raw Data'):
-#         st.write(df1.head())  
-#         st.write(df2.head())  
-# else:
-#     st.warning("Please upload both CSV files.")
 
 
 # Merge 
-# Ensure the column names match
-df1.rename(columns={'member_id': 'member_id'}, inplace=True)  # Rename column in df1 if necessary
-df2.rename(columns={'member.member_id': 'member_id'}, inplace=True)  # Rename column in df2 if necessary
-
-# Merge df1 and df2 into a single DataFrame, df
-df = pd.merge(df1, df2, on='member_id', how='inner')  # You can adjust how='inner' based on your needs (left, right, outer)
-
-# Now df contains the merged dataset
-
-#merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
 
 
 merged_df = merged_df.drop(columns=['member.member_id'])
+
+
+#merged_df
 
 df = merged_df
 
@@ -135,7 +68,7 @@ df['quarter_of_funding'] = df['quarter_of_funding'].apply(get_quarter)
 #display(df)
 
 #dropping mid column cause what is that
-df = df.drop(columns=['mid'])
+df = df.drop(columns=['mid'])#
 
 
 #df_combined = df_combined.rename(columns={'Spend': 'spend'})
@@ -227,125 +160,8 @@ df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
 #display(benefit_utilization)
 
 
-st.sidebar.image("soda.png")
 
-#st.sidebar.image("/Users/mofeogunsola/Documents/soda.png")
-
-
-
-# Sidebar title and navigation options
-st.sidebar.markdown("<h1 style='font-size:30px;'>Benefits Utilization</h1>", unsafe_allow_html=True)
-st.sidebar.markdown("<h2 style='font-size:17px; margin-bottom: 50px;'>Looking into overall Q4 data and merchant impact on utilization rates</h2>", unsafe_allow_html=True)
-
-st.sidebar.title("Dashboard Navigation")
-menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
-choice = st.sidebar.selectbox('Select a Page:', menu)
-
-# Page 1: Benefit Utilization Graph for Q4
-if choice == 'Benefit Utilization for Q4':
-    st.subheader('Benefit Utilization Rates for Q4')
-
-    #figures?
-    plt.figure(figsize=(12, 9.5))
-
-    barplot = sns.barplot(x='Benefit ID', y='Utilization (%)', data=benefit_utilization, palette='viridis')
-
-    plt.xlabel('Benefit ID', fontsize=16, fontweight='bold')
-    plt.ylabel('Utilization Rate (%)', fontsize=16, fontweight='bold')
-
-    #
-    norm = mcolors.Normalize(vmin=benefit_utilization['Utilization (%)'].min(), vmax=benefit_utilization['Utilization (%)'].max())
-    sm = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
-    sm.set_array([])
-    plt.colorbar(sm, ax=plt.gca())
-
-    # Add utilization % on top of each bar
-    for p in barplot.patches:
-        height = p.get_height()
-        barplot.text(p.get_x() + p.get_width() / 2., height + 1, f'{height:.1f}%', ha='center', va='bottom', fontsize=12)
-
-    # Show plot
-    st.pyplot(plt)
-
-# Page 2: Utilization Rates for San Francisco Merchants
-elif choice == 'Utilization Rates for San Francisco Merchants':
-    st.subheader('Utilization Rates for San Francisco Merchants')
-
-    # Filter out specific merchants
-    merchant_list = [
-        "SAFEWAY #1490 SAN FRANCISCO CA",
-        "CVS/PHARMACY #04675 SAN FRANCISCO CA",
-        "WALGREENS #4570 SAN FRANCISCO CA",
-        "FOODSCO #0351 SAN FRANCISCO CA"
-    ]
-    
-    # Filter data
-    df_filtered = df[df['Merchant'].isin(merchant_list)]
-
- 
-    avg_utilization = df_filtered.groupby('Merchant')['Utilization (%)'].mean().sort_values()
-
- 
-    avg_utilization_df = avg_utilization.reset_index()
-
-
-    fig = px.bar(
-        avg_utilization_df,
-        x="Merchant", 
-        y="Utilization (%)",
-        labels={"Utilization (%)": "Utilization Rate (%)", "Merchant": ""},
-        #title="Average Utilization Rate by Merchant in San Francisco",
-
-    )
-
-    #layout
-    fig.update_layout(
-        yaxis=dict(range=[25, 33]),  
-        font=dict(size=14),  # General font size
-        hoverlabel=dict(font_size=14),
-          width=900,  # Set the width of the figure
-        height=700,
-        showlegend=False  
-    )
-
-    st.plotly_chart(fig)
-
-# Page 3: View Dataset
-elif choice == 'Dataset':
-    st.subheader('Full Dataset')
-    st.dataframe(df)
-
-
-unique_merchants = df['Merchant'].unique() 
-
-benefit_utilization = df.groupby('Benefit ID')[['Amount Spent', 'Amount Allocated']].sum().reset_index()
-
-#Calculate 'Utilization (%)'
-benefit_utilization['Utilization (%)'] = (benefit_utilization['Amount Spent'] / benefit_utilization['Amount Allocated']) * 100
-
-#Handle NaN values
-benefit_utilization['Utilization (%)'] = benefit_utilization['Utilization (%)'].fillna(0)
-
-#adjust the index to start at 1
-benefit_utilization.reset_index(drop=True, inplace=True)
-benefit_utilization.index = benefit_utilization.index + 1
-
-df = df.merge(benefit_utilization[['Benefit ID', 'Utilization (%)']], on='Benefit ID', how='left')
-
-
-df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
-
-
-
-# Display the final DataFrame
-#display(df)
-
-#display(benefit_utilization)
-
-
-st.sidebar.image("soda.png")
-
-#st.sidebar.image("/Users/mofeogunsola/Documents/soda.png")
+st.sidebar.image("/Users/mofeogunsola/Documents/soda.png")
 
 
 
@@ -429,6 +245,6 @@ elif choice == 'Utilization Rates for San Francisco Merchants':
 # Page 3: View Dataset
 elif choice == 'Dataset':
     st.subheader('Full Dataset')
-    st.dataframe(df) 
+    st.dataframe(df)
 
 
