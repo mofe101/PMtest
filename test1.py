@@ -7,76 +7,76 @@ import os
 from pathlib import Path
 import pandas as pd
 
-# Print Streamlit version
-print(f"Streamlit Version: {st.__version__}")
-
-# Use st.empty() to conditionally hide file upload widgets
-upload_placeholder = st.empty()
-
-# File upload widgets
-file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
-file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
-
-# Hide file upload section once files are uploaded
-if file1 is not None and file2 is not None:
-    # Clear the file uploader widgets
-    upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
-    
-    df1 = pd.read_csv(file1)
-    df2 = pd.read_csv(file2)
-    
-    # Sidebar 
-    st.sidebar.title("Dashboard Navigation")
-    menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
-    choice = st.sidebar.selectbox('Select a Page:', menu)
-
-    #Conditional display for each page
-    if choice == 'Benefit Utilization for Q4':
-        st.subheader('Benefit Utilization Rates for Q4')
-      
-
-    elif choice == 'Utilization Rates for San Francisco Merchants':
-        st.subheader('Utilization Rates for San Francisco Merchants')
-
-
-    elif choice == 'Dataset':
-        if st.button('Show Dataset'):
-            st.subheader("Uploaded Datasets")
-            st.write("Enrollment Data:")
-            st.dataframe(df1.head())  # Display first file
-            st.write("Internal Analytics Data:")
-            st.dataframe(df2.head())  # Display second file
-
-else:
-    st.warning("Please upload both CSV files.")
-    
 # # Print Streamlit version
 # print(f"Streamlit Version: {st.__version__}")
 
-# # st.empty =  conditionally hide file upload widgets
+# # Use st.empty() to conditionally hide file upload widgets
 # upload_placeholder = st.empty()
 
-
+# # File upload widgets
 # file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
 # file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
 
-# # Logic for file uploads and conditional display
+# # Hide file upload section once files are uploaded
 # if file1 is not None and file2 is not None:
 #     # Clear the file uploader widgets
 #     upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
     
-#     # 
 #     df1 = pd.read_csv(file1)
 #     df2 = pd.read_csv(file2)
     
-#     # Button to control display 
-#     if st.button('Show Raw Data'):
-#         st.subheader("Enrollment CSV:")
-#         st.write(df1.head())
-#         st.subheader("Internal Analytics CSV:")
-#         st.write(df2.head())
+#     # Sidebar 
+#     st.sidebar.title("Dashboard Navigation")
+#     menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
+#     choice = st.sidebar.selectbox('Select a Page:', menu)
+
+#     #Conditional display for each page
+#     if choice == 'Benefit Utilization for Q4':
+#         st.subheader('Benefit Utilization Rates for Q4')
+      
+
+#     elif choice == 'Utilization Rates for San Francisco Merchants':
+#         st.subheader('Utilization Rates for San Francisco Merchants')
+
+
+#     elif choice == 'Dataset':
+#         if st.button('Show Dataset'):
+#             st.subheader("Uploaded Datasets")
+#             st.write("Enrollment Data:")
+#             st.dataframe(df1.head())  # Display first file
+#             st.write("Internal Analytics Data:")
+#             st.dataframe(df2.head())  # Display second file
+
 # else:
 #     st.warning("Please upload both CSV files.")
+    
+# Print Streamlit version
+print(f"Streamlit Version: {st.__version__}")
+
+# st.empty =  conditionally hide file upload widgets
+upload_placeholder = st.empty()
+
+
+file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
+file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
+
+# Logic for file uploads and conditional display
+if file1 is not None and file2 is not None:
+    # Clear the file uploader widgets
+    upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
+    
+    # 
+    df1 = pd.read_csv(file1)
+    df2 = pd.read_csv(file2)
+    
+    # Button to control display 
+    if st.button('Show Raw Data'):
+        st.subheader("Enrollment CSV:")
+        st.write(df1.head())
+        st.subheader("Internal Analytics CSV:")
+        st.write(df2.head())
+else:
+    st.warning("Please upload both CSV files.")
 
 
 
