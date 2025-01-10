@@ -30,7 +30,7 @@ if file1 is not None and file2 is not None:
     df2 = pd.read_csv(file2)
     
     #Conditional display of data
-        if st.button('Show Raw Data'):
+if st.button('Show Raw Data'):
             st.write(df1.head())  
             st.write(df2.head())  
     else:
