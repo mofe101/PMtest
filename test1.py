@@ -10,8 +10,29 @@ import pandas as pd
 
 
 
-print(st.__version__)  
+# print(st.__version__)  
 
+# file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
+# file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
+
+# if file1 is not None and file2 is not None:
+#     # Read the CSV files
+#     df1 = pd.read_csv(file1)
+#     df2 = pd.read_csv(file2)
+
+#     # Show data (optional)
+#     st.write(df1.head())
+#     st.write(df2.head())
+
+# else:
+#     st.warning("Please upload both CSV files.")
+
+
+#df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
+#df2 = pd.read_csv('Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
+
+
+# 
 file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
 
@@ -20,17 +41,12 @@ if file1 is not None and file2 is not None:
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
 
-    # Show data (optional)
-    st.write(df1.head())
-    st.write(df2.head())
-
+    # Conditional display of data: only show when the user clicks the button
+    if st.button('Show Raw Data'):
+        st.write(df1.head())  
+        st.write(df2.head())  
 else:
     st.warning("Please upload both CSV files.")
-
-
-#df1 = pd.read_csv('/Users/mofeogunsola/Documents/Enrollment.csv')
-#df2 = pd.read_csv('Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
-
 
 
 # Merge 
