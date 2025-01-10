@@ -1,4 +1,3 @@
-bnumpy==2.2.1
 pandas==2.2.3
 plotly==5.24.1
 streamlit==1.41.1
