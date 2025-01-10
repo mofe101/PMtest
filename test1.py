@@ -1,4 +1,3 @@
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
@@ -239,7 +238,7 @@ choice = st.sidebar.selectbox('Select a Page:', menu)
 if choice == 'Benefit Utilization for Q4':
     st.subheader('Benefit Utilization Rates for Q4')
 
-  #figures?
+    #figures?
     plt.figure(figsize=(12, 9.5))
 
     barplot = sns.barplot(x='Benefit ID', y='Utilization (%)', data=benefit_utilization, palette='viridis')
