@@ -177,8 +177,9 @@ df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
 #display(benefit_utilization)
 
 
+st.sidebar.image("soda.png")
 
-st.sidebar.image("/Users/mofeogunsola/Documents/soda.png")
+#st.sidebar.image("/Users/mofeogunsola/Documents/soda.png")
 
 
 
