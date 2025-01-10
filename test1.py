@@ -76,14 +76,14 @@ else:
 #     st.warning("Please upload both CSV files.")
 
 
-# # Merge 
-# merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+# Merge 
+merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
 
 
-# merged_df = merged_df.drop(columns=['member.member_id'])
+merged_df = merged_df.drop(columns=['member.member_id'])
 
 
-#merged_df
+merged_df
 
 df = merged_df
 
