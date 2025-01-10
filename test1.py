@@ -10,31 +10,38 @@ import pandas as pd
 import streamlit as st
 import pandas as pd
 
+
+import streamlit as st
+import pandas as pd
+
 # Print Streamlit version
 print(f"Streamlit Version: {st.__version__}")
 
-# Use st.empty() to conditionally hide file upload widgets
+# st.empty =  conditionally hide file upload widgets
 upload_placeholder = st.empty()
 
-# File upload widgets
+
 file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
 
-# Hide file upload section once files are uploaded
+# Logic for file uploads and conditional display
 if file1 is not None and file2 is not None:
     # Clear the file uploader widgets
     upload_placeholder.empty()  # Hide the file upload widgets after files are uploaded
     
+    # 
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
     
-    #Conditional display of data
-if st.button('Show Raw Data'):
-            st.write(df1.head())  
-            st.write(df2.head())  
+    # Button to control display 
+    if st.button('Show Raw Data'):
+        st.subheader("Enrollment CSV:")
+        st.write(df1.head())
+        st.subheader("Internal Analytics CSV:")
+        st.write(df2.head())
 else:
     st.warning("Please upload both CSV files.")
-  
+
 
 
 # print(st.__version__)  
