@@ -20,23 +20,34 @@ upload_placeholder = st.empty()
 file1 = upload_placeholder.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = upload_placeholder.file_uploader("Upload Internal Analytics CSV", type="csv")
 
+# Ensure both files are uploaded
 if file1 is not None and file2 is not None:
-   
+    # Read the CSV files
     df1 = pd.read_csv(file1)
     df2 = pd.read_csv(file2)
 
-    # Debug: Check if the files are loaded properly
-    st.write("df1 columns:", df1.columns)
-    st.write("df2 columns:", df2.columns)
+    # Check if merge columns exist
+    if 'member_id' in df1.columns and 'member.member_id' in df2.columns:
+        # Merge the dataframes on the correct columns
+        try:
+            merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+            st.write("Merge successful!")
+            
+            # Continue with your analysis:
+            df = merged_df
+            
+            # Perform operations on df (now it's safe to use it)
+            unique_benefit_ids = df['benefit_id'].nunique()
+            st.write(f"Number of unique benefit IDs: {unique_benefit_ids}")
 
-    # Try to merge the dataframes
-    try:
-        merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
-        st.write("Merge successful!")
-    except KeyError as e:
-        st.write(f"Merge failed due to missing columns: {e}")
+            # Continue other operations here...
+        except Exception as e:
+            st.write(f"Error during merge: {e}")
+    else:
+        st.write("Columns for merging were not found. Please check your file column names.")
 else:
     st.warning("Please upload both CSV files.")
+
 
 
 # print(st.__version__)  
