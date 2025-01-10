@@ -7,6 +7,9 @@ import os
 from pathlib import Path
 import pandas as pd
 
+import pandas as pd
+import streamlit as st
+
 # File upload widgets
 file1 = st.file_uploader("Upload Enrollment.csv", type="csv")
 file2 = st.file_uploader("Upload Internal Analytics CSV", type="csv")
@@ -26,7 +29,7 @@ if file1 is not None and file2 is not None:
                 df1['benefit_id'] = df2['benefit_id']  # Adjust as needed based on your logic
             else:
                 st.write("Error: 'benefit_id' column is missing from both files.")
-                return
+                st.stop()  # Stops further execution but doesn’t return
 
         # Now that we ensure 'benefit_id' is in df1, proceed with the merge
         merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id', how='inner')
@@ -47,6 +50,7 @@ if file1 is not None and file2 is not None:
 
 else:
     st.warning("Please upload both CSV files.")
+
 
 
 
