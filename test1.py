@@ -26,50 +26,11 @@ if uploaded_file2 is not None:
     df2 = pd.read_csv(uploaded_file2)
     st.write("Benefits file loaded:", df2.head())  # Display the first few rows for confirmation
 
-
-# Sidebar title and navigation options
-st.sidebar.markdown("<h1 style='font-size:30px;'>Benefits Utilization</h1>", unsafe_allow_html=True)
-st.sidebar.markdown("<h2 style='font-size:17px; margin-bottom: 50px;'>Looking into overall Q4 data and merchant impact on utilization rates</h2>", unsafe_allow_html=True)
-
-st.sidebar.title("Dashboard Navigation")
-menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
-choice = st.sidebar.selectbox('Select a Page:', menu)
-
-# File uploader and image handling ONLY within 'Benefit Utilization for Q4'
-if choice == 'Benefit Utilization for Q4':
-    uploaded_image = st.sidebar.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
-
-    if uploaded_image is not None:
-        st.sidebar.image(uploaded_image)  # Show the uploaded image only on this page
-    else:
-        st.sidebar.write("Please upload an image.")
-
-    # Additional code for "Benefit Utilization for Q4" page goes here (charts, graphs, etc.)
-
-elif choice == 'Utilization Rates for San Francisco Merchants':
-    # Add the functionality for the San Francisco Merchants page
-    st.subheader('Utilization Rates for San Francisco Merchants')
-    # Your other code for this section...
-
-elif choice == 'Dataset':
-    # Code to display the full dataset (if needed)
-    st.subheader('Full Dataset')
-    st.dataframe(df)  # Display dataset
-
-# # Sidebar file uploader only for 'Benefit Utilization for Q4' page
-# if choice == 'Benefit Utilization for Q4':
-#     uploaded_image = st.sidebar.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
-
-#     if uploaded_image is not None:
-#         st.sidebar.image(uploaded_image)  # Show the uploaded image only on this page
-#     else:
-#         st.sidebar.write("Please upload an image.")
-
-# # Check if the files are loaded before merging
-# if 'df1' in locals() and 'df2' in locals():
-#     merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
-# else:
-#     st.error("Files not loaded properly, please upload the correct files.")
+# Check if the files are loaded before merging
+if 'df1' in locals() and 'df2' in locals():
+    merged_df = pd.merge(df1, df2, left_on='member_id', right_on='member.member_id')
+else:
+    st.error("Files not loaded properly, please upload the correct files.")
 
 
 
@@ -221,14 +182,14 @@ df['Utilization (%)'] = df['Utilization (%)'].fillna(0)
 st.sidebar.image("soda.png")
 
 
-#not sure if this is the right choice...
-# # Sidebar title and navigation options
-# st.sidebar.markdown("<h1 style='font-size:30px;'>Benefits Utilization</h1>", unsafe_allow_html=True)
-# st.sidebar.markdown("<h2 style='font-size:17px; margin-bottom: 50px;'>Looking into overall Q4 data and merchant impact on utilization rates</h2>", unsafe_allow_html=True)
 
-# st.sidebar.title("Dashboard Navigation")
-# menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
-# choice = st.sidebar.selectbox('Select a Page:', menu)
+# Sidebar title and navigation options
+st.sidebar.markdown("<h1 style='font-size:30px;'>Benefits Utilization</h1>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='font-size:17px; margin-bottom: 50px;'>Looking into overall Q4 data and merchant impact on utilization rates</h2>", unsafe_allow_html=True)
+
+st.sidebar.title("Dashboard Navigation")
+menu = ['Benefit Utilization for Q4', 'Utilization Rates for San Francisco Merchants', 'Dataset']
+choice = st.sidebar.selectbox('Select a Page:', menu)
 
 # Page 1: Benefit Utilization Graph for Q4
 if choice == 'Benefit Utilization for Q4':
@@ -303,5 +264,6 @@ elif choice == 'Utilization Rates for San Francisco Merchants':
 elif choice == 'Dataset':
     st.subheader('Full Dataset')
     st.dataframe(df)
+
 
 
