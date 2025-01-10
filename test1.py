@@ -15,13 +15,13 @@ from pathlib import Path
 # df2 = pd.read_csv('/Users/mofeogunsola/Documents/Internal Analytics_Benefits and Utilization_Table.csv')
 
 # Uploading
-uploaded_file1 = st.file_uploader("Upload Enrollment File", type='csv')
+uploaded_file1 = st.file_uploader("Please upload Enrollment File", type='csv')
 if uploaded_file1 is not None:
     df1 = pd.read_csv(uploaded_file1)  # Read the first uploaded file
     # NO displaying  dataframe
     # st.write("Enrollment file loaded:", df1.head())  # Do not display data
 
-uploaded_file2 = st.file_uploader("Upload Benefits File", type='csv')
+uploaded_file2 = st.file_uploader("Please upload Analytics Benefits and Utilization File: ", type='csv')
 if uploaded_file2 is not None:
     df2 = pd.read_csv(uploaded_file2)  # Read the second uploaded file
      # NO displaying  dataframe
