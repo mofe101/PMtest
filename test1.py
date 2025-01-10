@@ -25,6 +25,14 @@ uploaded_file2 = st.file_uploader("Upload Benefits File", type='csv')
 if uploaded_file2 is not None:
     df2 = pd.read_csv(uploaded_file2)
     st.write("Benefits file loaded:", df2.head())  # Display the first few rows for confirmation
+# Sidebar file uploader only for 'Benefit Utilization for Q4' page
+if choice == 'Benefit Utilization for Q4':
+    uploaded_image = st.sidebar.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
+
+    if uploaded_image is not None:
+        st.sidebar.image(uploaded_image)  # Show the uploaded image only on this page
+    else:
+        st.sidebar.write("Please upload an image.")
 
 # Check if the files are loaded before merging
 if 'df1' in locals() and 'df2' in locals():
